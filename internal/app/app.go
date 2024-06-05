@@ -1,15 +1,23 @@
 package app
 
 import (
-	"core-adapter-mini-billing/config"
+	"transport-service/config"
 	"transport-service/internal/core/service"
+	"transport-service/internal/db/pg"
 	"transport-service/internal/db/repository"
 )
 
 type App struct {
 	Cfg config.Config
 
-	Repo repository.Manager
+	Repos repository.Manager
 
 	Services service.Manager
+}
+
+func NewApp(cfg config.Config, pg *pg.Conn) *App {
+	return newAppBuilder().
+		setConfig(cfg).
+		setServices(service.NewServiceManager(repository.NewRepositoryManager(pg))).
+		build()
 }

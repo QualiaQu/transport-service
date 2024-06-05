@@ -8,11 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
-)
-
-const (
-	RegisterSleepTime = time.Second * 5
+	"transport-service/internal/helpers"
 )
 
 type serverOpts struct {
@@ -54,7 +50,7 @@ func (server serverOpts) stop() {
 	<-quit
 	slog.Info("Shutdown Server ...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), RegisterSleepTime)
+	ctx, cancel := context.WithTimeout(context.Background(), helpers.RegisterSleepTime)
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
 		slog.Info("Server Shutdown:", err)

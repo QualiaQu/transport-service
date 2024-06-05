@@ -1,0 +1,17 @@
+services:
+  transport-service:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8099:8099"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
