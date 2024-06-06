@@ -1,4 +1,8 @@
-CREATE TABLE transport_types (
-                                 id SERIAL PRIMARY KEY,
-                                 name VARCHAR(255) NOT NULL
+create table transport_types
+(
+    id   serial
+        primary key,
+    name varchar(255) not null
 );
+
+comment on table transport_types is 'Виды транспорта';

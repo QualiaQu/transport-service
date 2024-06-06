@@ -1,4 +1,8 @@
-CREATE TABLE cities (
-                        id SERIAL PRIMARY KEY,
-                        name VARCHAR(255) NOT NULL
+create table cities
+(
+    id   serial
+        primary key,
+    name varchar(255) not null
 );
+
+comment on table cities is 'Города';
