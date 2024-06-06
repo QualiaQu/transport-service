@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	cfg, err := config.ReadConfig(helpers.DefaultConfigPath)
+	cfg, err := config.ReadConfigYAML(helpers.DefaultConfigPath)
 	if err != nil {
 		slog.Error("Failed to load YAML config: %v", err)
 

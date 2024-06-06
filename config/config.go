@@ -21,8 +21,7 @@ type Postgres struct {
 	DBName   string `yaml:"dbname"`
 }
 
-// ReadConfig загружает конфигурацию из YAML файла
-func ReadConfig(filename string) (Config, error) {
+func ReadConfigYAML(filename string) (Config, error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {
 		return Config{}, err
