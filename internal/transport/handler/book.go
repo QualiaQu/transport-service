@@ -2,11 +2,11 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"transport-service/internal/app"
 )
 
-func HealthCheck() gin.HandlerFunc {
+func BookRoute(*app.App) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Status(http.StatusOK)
+
 	}
 }
