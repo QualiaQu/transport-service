@@ -1,9 +1,16 @@
 package service
 
-import "transport-service/internal/db/repository"
+import (
+	"transport-service/internal/core/interface/service"
+	"transport-service/internal/db/repository"
+)
 
-type Manager struct{}
+type Manager struct {
+	TransportService service.TransportService
+}
 
 func NewServiceManager(repo repository.Manager) Manager {
-	return Manager{}
+	return Manager{
+		NewTransportService(repo.TransportRepository),
+	}
 }
