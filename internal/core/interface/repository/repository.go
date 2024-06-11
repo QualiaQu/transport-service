@@ -7,4 +7,5 @@ import (
 
 type TransportRepository interface {
 	GetTransportTypes(ctx context.Context) ([]model.TransportPG, error)
+	GetTransportTypesBetweenCities(ctx context.Context, cityFrom string, cityTo string) ([]model.TransportPG, error)
 }

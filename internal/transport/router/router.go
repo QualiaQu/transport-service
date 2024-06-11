@@ -30,7 +30,7 @@ func InitRoutes(app *app.App) *Router {
 	transport := apiV1.Group("/transport")
 	{
 		transport.GET("/types", handler.GetTransportTypes(app))
-		transport.GET("/types-along", handler.GetTransportTypesAlongRoute(app))
+		transport.GET("/types-between-cities", handler.GetTransportTypesBetweenCities(app))
 	}
 
 	book := router.Group("/book")
