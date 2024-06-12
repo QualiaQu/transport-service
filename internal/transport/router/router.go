@@ -33,7 +33,7 @@ func InitRoutes(app *app.App) *Router {
 		transport.GET("/types-between-cities", handler.GetTransportTypesBetweenCities(app))
 	}
 
-	book := router.Group("/book")
+	book := apiV1.Group("/book")
 	{
 		book.POST("/route", handler.BookRoute(app))
 	}

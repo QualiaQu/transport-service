@@ -7,10 +7,11 @@ import (
 
 type Manager struct {
 	repository.TransportRepository
+	repository.RoutesRepository
 }
 
 func NewRepositoryManager(pg *pg.Conn) Manager {
 	return Manager{
-		NewTransportRepository(pg),
+		NewTransportRepository(pg), NewRoutesRepository(pg),
 	}
 }

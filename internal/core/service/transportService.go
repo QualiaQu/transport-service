@@ -17,23 +17,31 @@ func NewTransportService(repo repository.TransportRepository) service.TransportS
 }
 
 func (service _transportService) GetTransportTypes(ctx context.Context) ([]model.TransportHandler, error) {
-	transportTypes, err := service.repoPG.GetTransportTypes(ctx)
+	transportTypesPG, err := service.repoPG.GetTransportTypes(ctx)
 
 	if err != nil {
 		return nil, fmt.Errorf("transportService GetTransportService: %w", err)
 	}
 
-	return model.MapPGToHandler(transportTypes), nil
-
+	return transportPgToHandler(transportTypesPG), nil
 }
 
 func (service _transportService) GetTransportTypesBetweenCities(ctx context.Context,
 	cityFrom string, cityTo string) ([]model.TransportHandler, error) {
-	transportTypes, err := service.repoPG.GetTransportTypesBetweenCities(ctx, cityFrom, cityTo)
+	transportTypesPG, err := service.repoPG.GetTransportTypesBetweenCities(ctx, cityFrom, cityTo)
 
 	if err != nil {
 		return nil, fmt.Errorf("transportService GetTransportTypesBetweenCities: %w", err)
 	}
 
-	return model.MapPGToHandler(transportTypes), nil
+	return transportPgToHandler(transportTypesPG), nil
+}
+
+func transportPgToHandler(transportTypesPG []model.TransportPG) []model.TransportHandler {
+	transportTypes := make([]model.TransportHandler, len(transportTypesPG))
+	for i, transportPG := range transportTypesPG {
+		transportTypes[i] = transportPG.ToHandler()
+	}
+
+	return transportTypes
 }
