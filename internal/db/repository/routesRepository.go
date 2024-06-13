@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"github.com/lib/pq"
 	"transport-service/internal/db/pg"
 	"transport-service/internal/model"
@@ -40,4 +41,49 @@ func (repo RoutesRepository) GetRoutesOnDate(ctx context.Context, request model.
 	}
 
 	return routes, nil
+}
+
+func (repo RoutesRepository) BookRoutes(ctx context.Context, userID int, routeIDs []int) ([]int, error) {
+	var failedIDs []int
+
+	tx, err := repo.pg.BeginTxx(ctx, nil)
+	if err != nil {
+		return routeIDs, err
+	}
+
+	for _, id := range routeIDs {
+		res, err := tx.ExecContext(ctx, `UPDATE routes SET is_booked = true WHERE id = $1 AND is_booked = false`, id)
+		if err != nil {
+			failedIDs = append(failedIDs, id)
+
+			continue
+		}
+
+		rowsAffected, err := res.RowsAffected()
+		if err != nil || rowsAffected == 0 {
+			failedIDs = append(failedIDs, id)
+
+			continue
+		}
+
+		_, err = tx.ExecContext(ctx, `INSERT INTO bookings (user_id, route_id) VALUES ($1, $2)`, userID, id)
+		if err != nil {
+			failedIDs = append(failedIDs, id)
+		}
+	}
+
+	if len(failedIDs) > 0 {
+		err = tx.Rollback()
+		if err != nil {
+			return nil, err
+		}
+
+		return failedIDs, sql.ErrTxDone
+	}
+
+	if err = tx.Commit(); err != nil {
+		return routeIDs, err
+	}
+
+	return nil, nil
 }

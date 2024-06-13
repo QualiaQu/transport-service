@@ -37,3 +37,30 @@ func GetRoutesOnDate(app *app.App) gin.HandlerFunc {
 		c.JSON(http.StatusOK, routes)
 	}
 }
+
+func BookRoutes(app *app.App) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var request model.BookingRequest
+
+		if err := c.ShouldBindJSON(&request); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "неправильный формат запроса"})
+			return
+		}
+
+		failedIDs, err := app.Services.RoutesService.Book(c, request.UserID, request.RouteIDs)
+		if err != nil {
+			slog.Error(err.Error())
+			c.JSON(http.StatusInternalServerError, model.BookingResponse{
+				Success:   false,
+				FailedIDs: failedIDs,
+				Message:   "ошибка бронирования некоторых рейсов",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, model.BookingResponse{
+			Success: true,
+			Message: "все рейсы успешно забронированы",
+		})
+	}
+}

@@ -12,4 +12,5 @@ type TransportRepository interface {
 
 type RoutesRepository interface {
 	GetRoutesOnDate(ctx context.Context, request model.RouteRequest) ([]model.RoutePG, error)
+	BookRoutes(ctx context.Context, userID int, routeIDs []int) ([]int, error)
 }

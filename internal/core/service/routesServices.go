@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"transport-service/internal/core/interface/repository"
 	"transport-service/internal/core/interface/service"
 	"transport-service/internal/model"
@@ -33,4 +34,8 @@ func routesPgToResponse(routesPG []model.RoutePG) []model.RouteResponse {
 	}
 
 	return routesResponse
+}
+
+func (service _routesService) Book(ctx *gin.Context, userID int, routesID []int) ([]int, error) {
+	return service.repoPG.BookRoutes(ctx, userID, routesID)
 }

@@ -25,17 +25,13 @@ func InitRoutes(app *app.App) *Router {
 	routes := apiV1.Group("/routes")
 	{
 		routes.GET("/on-date", handler.GetRoutesOnDate(app))
+		routes.POST("/book", handler.BookRoutes(app))
 	}
 
 	transport := apiV1.Group("/transport")
 	{
 		transport.GET("/types", handler.GetTransportTypes(app))
 		transport.GET("/types-between-cities", handler.GetTransportTypesBetweenCities(app))
-	}
-
-	book := apiV1.Group("/book")
-	{
-		book.POST("/route", handler.BookRoute(app))
 	}
 
 	return router
