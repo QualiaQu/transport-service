@@ -1,7 +1,9 @@
 package router
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
 	"net/http"
 	"transport-service/internal/app"
 	"transport-service/internal/transport/handler"
@@ -17,6 +19,7 @@ func InitRoutes(app *app.App) *Router {
 	router := &Router{
 		r,
 	}
+	router.Use(cors.Default())
 
 	router.GET("/health", healthCheck())
 
