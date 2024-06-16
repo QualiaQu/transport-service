@@ -14,4 +14,5 @@ type TransportService interface {
 type RoutesService interface {
 	GetRoutesOnDate(ctx context.Context, request model.RouteRequest) ([]model.RouteResponse, error)
 	Book(ctx *gin.Context, userID int, routesID []int) ([]int, error)
+	GetBookedRoutes(ctx context.Context, userID int) ([]model.RouteResponse, error)
 }

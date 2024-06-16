@@ -87,3 +87,22 @@ func (repo RoutesRepository) BookRoutes(ctx context.Context, userID int, routeID
 
 	return nil, nil
 }
+
+func (repo RoutesRepository) GetBookedRoutes(ctx context.Context, userID int) ([]model.RoutePG, error) {
+	var routes []model.RoutePG
+
+	err := repo.pg.SelectContext(
+		ctx,
+		&routes,
+		`SELECT r.id, r.transport_type, r.price, r.departure_datetime, r.arrival_datetime
+		FROM routes r
+		JOIN bookings b ON r.id = b.route_id
+		WHERE b.user_id = $1`,
+		userID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return routes, nil
+}

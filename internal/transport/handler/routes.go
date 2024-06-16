@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
+	"strconv"
 	"transport-service/internal/app"
 	"transport-service/internal/model"
 )
@@ -62,5 +63,27 @@ func BookRoutes(app *app.App) gin.HandlerFunc {
 			Success: true,
 			Message: "все рейсы успешно забронированы",
 		})
+	}
+}
+
+func GetBookedRoutes(app *app.App) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userIDStr := c.Query("id")
+		userID, err := strconv.Atoi(userIDStr)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "неправильный формат ID пользователя"})
+
+			return
+		}
+
+		routes, err := app.Services.RoutesService.GetBookedRoutes(c, userID)
+		if err != nil {
+			slog.Error(err.Error())
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "ошибка получения забронированных маршрутов"})
+
+			return
+		}
+
+		c.JSON(http.StatusOK, routes)
 	}
 }

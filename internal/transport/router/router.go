@@ -18,7 +18,7 @@ func InitRoutes(app *app.App) *Router {
 		r,
 	}
 
-	router.GET("/health", HealthCheck())
+	router.GET("/health", healthCheck())
 
 	apiV1 := r.Group("/api/v1")
 
@@ -26,6 +26,7 @@ func InitRoutes(app *app.App) *Router {
 	{
 		routes.GET("/on-date", handler.GetRoutesOnDate(app))
 		routes.POST("/book", handler.BookRoutes(app))
+		routes.GET("/booked", handler.GetBookedRoutes(app))
 	}
 
 	transport := apiV1.Group("/transport")
@@ -37,7 +38,7 @@ func InitRoutes(app *app.App) *Router {
 	return router
 }
 
-func HealthCheck() gin.HandlerFunc {
+func healthCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	}
