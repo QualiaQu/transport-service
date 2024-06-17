@@ -1,8 +1,8 @@
 server:
   listen: ":8099"
 postgres:
-  # host: postgres  # - для запуска в докере
-  host: localhost
+  host: postgres  # - для запуска в докере
+  #host: localhost
   user: postgres
   password: postgres
   dbname: postgres

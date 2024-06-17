@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"transport-service/config"
 	"transport-service/internal/app"
+	"transport-service/internal/db"
 	"transport-service/internal/db/pg"
 	"transport-service/internal/helpers"
 	"transport-service/internal/transport/router"
@@ -25,6 +26,11 @@ func main() {
 	if err != nil {
 		slog.Error("Failed to connect to database: %v", err)
 
+		return
+	}
+
+	if err = db.InitDB(ctx, pgConn); err != nil {
+		slog.Error("Failed to initialize database: %v", err)
 		return
 	}
 
