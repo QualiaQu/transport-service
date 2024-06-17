@@ -3,6 +3,9 @@ package router
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "transport-service/docs"
 
 	"net/http"
 	"transport-service/internal/app"
@@ -22,6 +25,8 @@ func InitRoutes(app *app.App) *Router {
 	router.Use(cors.Default())
 
 	router.GET("/health", healthCheck())
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	apiV1 := r.Group("/api/v1")
 

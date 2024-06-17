@@ -1,0 +1,222 @@
+definitions:
+  gin.H:
+    additionalProperties:
+      type: any
+    type: object
+  model.BookingRequest:
+    properties:
+      route_ids:
+        items:
+          type: integer
+        type: array
+      user_id:
+        type: integer
+    required:
+    - route_ids
+    - user_id
+    type: object
+  model.BookingResponse:
+    properties:
+      failed_ids:
+        items:
+          type: integer
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  model.RoutePG:
+    properties:
+      arrivalDatetime:
+        type: string
+      departureDatetime:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      transportType:
+        type: integer
+    type: object
+  model.RouteRequest:
+    properties:
+      date:
+        type: string
+      destination:
+        type: string
+      origin:
+        type: string
+      preferred_transport:
+        items:
+          type: integer
+        type: array
+    required:
+    - date
+    - destination
+    - origin
+    - preferred_transport
+    type: object
+  model.TransportHandler:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /routes/book:
+    post:
+      consumes:
+      - application/json
+      description: Забронировать указанные маршруты для пользователя
+      parameters:
+      - description: Данные запроса на бронирование
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.BookingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Результат бронирования
+          schema:
+            $ref: '#/definitions/model.BookingResponse'
+        "400":
+          description: Неправильный формат запроса
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Ошибка бронирования некоторых рейсов
+          schema:
+            $ref: '#/definitions/model.BookingResponse'
+      summary: Забронировать маршруты
+      tags:
+      - Маршруты
+  /routes/booked:
+    get:
+      consumes:
+      - application/json
+      description: Получить все забронированные маршруты для конкретного пользователя
+      parameters:
+      - description: ID пользователя
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список забронированных маршрутов
+          schema:
+            items:
+              $ref: '#/definitions/model.RoutePG'
+            type: array
+        "400":
+          description: Неправильный формат ID пользователя
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Ошибка получения забронированных маршрутов
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Получить забронированные маршруты
+      tags:
+      - Маршруты
+  /routes/on-date:
+    get:
+      consumes:
+      - application/json
+      description: Получить доступные маршруты на заданную дату и предпочтительные
+        виды транспорта
+      parameters:
+      - description: Данные запроса
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.RouteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список маршрутов
+          schema:
+            items:
+              $ref: '#/definitions/model.RoutePG'
+            type: array
+        "400":
+          description: Неправильный формат запроса
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Ошибка получения рейсов на день
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Получить маршруты на дату
+      tags:
+      - Маршруты
+  /transport/types:
+    get:
+      consumes:
+      - application/json
+      description: Получить список всех доступных типов транспорта
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список типов транспорта
+          schema:
+            items:
+              $ref: '#/definitions/model.TransportHandler'
+            type: array
+        "500":
+          description: Ошибка получения списка типов транспорта
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Получить все типы транспорта
+      tags:
+      - Транспорт
+  /transport/types-between-cities:
+    get:
+      consumes:
+      - application/json
+      description: Получить список типов транспорта, доступных для перемещения между
+        двумя городами
+      parameters:
+      - description: Город отправления
+        in: query
+        name: cityFrom
+        required: true
+        type: string
+      - description: Город назначения
+        in: query
+        name: cityTo
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список типов транспорта
+          schema:
+            items:
+              $ref: '#/definitions/model.TransportHandler'
+            type: array
+        "400":
+          description: Необходимо указать параметры cityFrom и cityTo
+          schema:
+            $ref: '#/definitions/gin.H'
+        "500":
+          description: Ошибка получения списка типов транспорта
+          schema:
+            $ref: '#/definitions/gin.H'
+      summary: Получить типы транспорта между городами
+      tags:
+      - Транспорт
+swagger: "2.0"
