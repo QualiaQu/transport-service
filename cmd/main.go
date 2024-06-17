@@ -31,6 +31,7 @@ func main() {
 
 	if err = db.InitDB(ctx, pgConn); err != nil {
 		slog.Error("Failed to initialize database: %v", err)
+
 		return
 	}
 
